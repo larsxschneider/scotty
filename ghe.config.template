@@ -1,0 +1,13 @@
+#
+# GHE Config
+#
+
+GHE_KEY=~/.ssh/yourkey
+GHE_HOST=git.yourcompany.com
+GHE_USER=youruser
+
+#
+# Used by oss-fork.sh
+#
+OSS_FORK_ORG=company-forks
+OSS_FORK_UPDATE_USER=service-account
