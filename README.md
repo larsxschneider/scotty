@@ -39,12 +39,12 @@ If you want to share the chrony logs with GitHub support, then you can attached 
 ./admin/support-bundle-attach.sh 54321 '/var/log/chrony/*'
 ```
 
-##### Fork an Open Source repositories
-If you want to fork on a Open Source repositories in your GitHub Enterprise instance then you can use this command:
+##### Fork Open Source repositories
+If you want to fork an Open Source repository to your GitHub Enterprise instance, then you can use this command:
 ```
 ./admin/oss-fork.sh --create scotty kirk,bones https://github.com/larsxschneider/scotty
 ```
-The command will fork the repository to your common Open Source organization (defined in `ghe.config`) using the name "scotty". It will protect all upstream branches and configure in a way that only the "fork update user" (defined in `ghe.config`) can modify them. Finally, it will grant the users "kirk" and "bones" write access.
+The command will fork the repository to your common Open Source organization (defined in `ghe.config`) using the name "scotty". It will protect all upstream branches and configure them in a way that only the "fork update user" (defined in `ghe.config`) can modify them. Finally, it will grant the users "kirk" and "bones" write access.
 
 You can update all branches of an existing fork with the upstream state with the following command:
 ```
