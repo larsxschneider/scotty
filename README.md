@@ -1,18 +1,21 @@
-### Scotty - Your GH Enterprise Technician :rocket:
+## Scotty - Your GH Enterprise Technician :rocket:
 
 Scotty is a collection of helper scripts for GitHub Enterprise administrators. 
 
+---
 :warning: **Attention: These scripts are not supported by GitHub. Use them at your own risk!** :warning:
 
-#### Initial Setup
+---
+
+### Initial Setup
 Copy `ghe.config.template` to `ghe.config` and adjust it to your environment. In addition, it is recommended to setup the Git credential helper as this mechanism is used for GitHub API calls.
 
-#### General Info
+### General Info
 There are two types of scripts. The first type are `report` scripts. These scripts query all kinds of information but they do not change anything on the GitHub Enterprise instance. The second type are `admin` scripts. These scripts perform actions and change things on your instance. Please handle the `admin` scripts with special care.
 
 You can learn more about every script by calling it with the `-h` or `--help` parameter. In addition, most of the scripts will print what they would do in a "dry-run" mode triggered with the `-n` parameter.
 
-#### Examples
+### Examples
 
 ##### Investigate errors
 Let's say you see a lot of babeld errors on your GitHub Enterprise System Health dashboard. You can run the following command to see all babeld errors aggregated by the hour:
@@ -57,11 +60,11 @@ If you want to purge sensitive data from a repository, then you should [rewrite 
 ./admin/repo-remove-sensitive-data.sh org/repo
 ```
 
-#### Contributions
+### Contributions
 These scripts are far from perfect. If you see ways to improve them or if you have ideas for new useful scripts, then I am happy to review your Pull Request.
 
-#### Acknowledgments
+### Acknowledgments
 Almost all tricks used in these scripts I learned from the fine GitHub Enterprise support crew!
 
-#### License
+### License
 Scotty is available under the MIT license. See the LICENSE file for more info.
