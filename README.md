@@ -18,12 +18,12 @@ You can learn more about every script by calling it with the `-h` or `--help` pa
 ### Examples
 
 ##### Investigate errors
-Let's say you see a lot of babeld errors on your GitHub Enterprise System Health dashboard. You can run the following command to see all babeld errors aggregated by the hour:
+Let's say you see a lot of `babeld` errors on your GitHub Enterprise System Health dashboard. You can run the following command to see all babeld errors aggregated by the hour:
 ```
 ./reports/babeld-errors.sh
 ```
 
-If you spot a error that has a very high frequency, then you can look at the error over all available log data aggregate by day:
+If you spot an error that has a very high frequency, then you can look at the error over all available log data aggregate by day:
 ```
 ./reports/babeld-errors.sh --all --day | grep "your error"
 ```
