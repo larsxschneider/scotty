@@ -39,5 +39,5 @@ fi
 
 echo "Promoting $USER to admin in $ORG..."
 execute << EOF
-    ghe-org-admin-promote -u $USER -o $ORD
+    ghe-org-admin-promote -u $USER -o $ORG
 EOF
