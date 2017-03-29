@@ -43,37 +43,50 @@ fi
 
 execute << EOF
     github-env bin/runner -e production "'
-        staff_user = User / \"$GHE_USER\";
-        target_org = User / \"$TARGET_ORG\";
-        source_org = User / \"$SOURCE_ORG\";
+        staff_user = User.find_by_login(\"$GHE_USER\");
+        target_org = User.find_by_login(\"$TARGET_ORG\");
+        source_org = User.find_by_login(\"$SOURCE_ORG\");
         if source_org and target_org and staff_user;
             source_org.repositories.each {|repo|
                 repo.teams.each {|source_team|
                     if target_org.teams.find {|t| t.name == source_team.name };
-                        raise \"Error: Team '#{source_team.name}' already exists in '#{target_org.login}'!\"
+                        raise \"Error: Team #{source_team.name} already exists in #{target_org.login}!\"
                     end;
                 }
             }
+            GitHub.context.push(actor_id: staff_user.id);
             source_org.repositories.each {|repo|
-                teams = repo.teams;
-                repo.async_transfer_ownership_to(target_org, actor: staff_user);
+                teams = repo.teams.map { |t| {
+                    \"name\" => t.name,
+                    \"description\" => t.description,
+                    \"permission\" => t.permission_for(repo),
+                    \"privacy\" => t.privacy,
+                    \"members\" => t.members.map { |m| m.login }
+                } };
+                puts \"Transferring repo: #{repo.name}\";
+                repo.async_transfer_ownership_to(target_org, actor: staff_user, target_teams: []);
                 target_repo = nil;
                 loop do
-                    target_repo = Repository.find_by_name_with_owner \"$TARGET_ORG/#{repo.name}\";
+                    target_repo = Repository.find_by_name_with_owner(\"#{target_org.login}/#{repo.name}\");
                     break if target_repo;
                     sleep(1);
-                end
+                end;
                 teams.each {|source_team|
-                    target_team = (User / \"$TARGET_ORG\").teams.find {|t| t.name == source_team.name };
+                    target_org.reload();
+                    target_team = target_org.teams.find {|t| t.name == source_team[\"name\"] };
                     if !target_team;
-                        puts \"Creating team '#{source_team.name}' in '#{target_org.login}'...\";
-                        target_team = (User / \"$TARGET_ORG\").create_team(source_team.name, creator: staff_user);
-                        target_team.description = source_team.description;
-                        target_team.privacy = source_team.privacy;
+                        puts \"Creating team: #{source_team[\"name\"]}\";
+                        target_team = target_org.create_team(source_team[\"name\"], creator: staff_user);
+                        target_team.description = source_team[\"description\"];
+                        target_team.privacy = source_team[\"privacy\"];
                         target_team.save!;
-                        source_team.members.each {|m| target_team.add_member(m)};
+                        source_team[\"members\"].each {|m|
+                            puts \"Adding member to team _#{target_team.name}_: #{m}\";
+                            target_team.add_member(User.find_by_login(m));
+                        };
                     end
-                    target_team.add_repository(target_repo, source_team.permission);
+                    puts \"Adding repo to team _#{target_team.name}_: #{target_repo.name} (#{source_team[\"permission\"]})\";
+                    target_team.add_repository(target_repo, source_team[\"permission\"]);
                 }
             }
         else
