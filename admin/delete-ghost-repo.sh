@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 #
-# Restart the management console
+# Delete unreplicated repo
 #
 # Usage:
-#   restart-management-console.sh
+#   delete-ghost-repo.sh <source org/repo>
 #
 # Options:
 #   -h, --help    Display this message.
 #
 # Example:
-#   restart-management-console.sh
+#   delete-ghost-repo.sh
 #
 
 BASE_DIR=$(cd "${0%/*}/.." && pwd)
@@ -24,8 +24,11 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+REPO=$1
+if [ -z "$REPO" ]; then
+    usage "source org/repo is a required parameter!"
+fi
+
 execute << EOF
-    sudo service enterprise-manage stop
-    sleep 10
-    sudo service enterprise-manage start
+    echo "Repository.find_by_name_with_owner('$REPO').remove(User.find_by_login('ghost'))" | ghe-console -y
 EOF
