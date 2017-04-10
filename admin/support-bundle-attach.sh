@@ -40,7 +40,7 @@ fi
 echo "Path:      $DATA"
 
 execute << EOF
-    tar -zcvf ~/logs-$TICKET.tgz $DATA
+    sudo tar -zcvf ~/logs-$TICKET.tgz $DATA
     ghe-support-bundle -f ~/logs-$TICKET.tgz -t $TICKET
     rm ~/logs-$TICKET.tgz
 EOF
