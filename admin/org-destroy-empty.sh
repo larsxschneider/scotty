@@ -3,7 +3,7 @@
 # Destroy an empty organization.
 #
 # Usage:
-#   org-destory-empty.sh [OPTIONS] <org>
+#   org-destroy-empty.sh [OPTIONS] <org>
 #
 # Options:
 #   --i-know-what-im-doing Suppress any warning (useful for scripting!)
@@ -11,7 +11,7 @@
 #   -h, --help             Display this message.
 #
 # Example:
-#   org-destory-empty.sh myorg
+#   org-destroy-empty.sh myorg
 #
 
 BASE_DIR=$(cd "${0%/*}/.." && pwd)
