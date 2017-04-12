@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 #
-# This script aggregates and reports the various clients 
-# that make requests via HTTP(S) recently.
+# This script prints the various HTTP clients that accessed GitHub Enterprise
+# and counts the number of requests they made via HTTP(S) recently.
 #
 # Usage:
-#   https-clients.sh
+#   haproxy-clients.sh
 #
 # Options:
+#   -a, --all     Process all available logs (rolled logs)
 #   -h, --help    Display this message.
 #
 # Example:
-#   https-clients.sh
+#   haproxy-clients.sh
 #
 
 BASE_DIR=$(cd "${0%/*}/.." && pwd)
@@ -18,6 +19,7 @@ BASE_DIR=$(cd "${0%/*}/.." && pwd)
 
 while [ $# -gt 0 ]; do
     case $1 in
+        (-a|--all)      all_logs; shift;;
         (-h|--help)     usage 2>&1;;
         (--)            shift; break;;
         (-*)            usage "$1: unknown option";;
