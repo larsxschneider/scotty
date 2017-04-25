@@ -40,7 +40,7 @@ fi
 
 execute << EOF
     github-env bin/runner -e production "'
-        admins=(User / \"$ORG\").admins.map { |u| u.$PROPERTY }.sort;
         puts admins.join(\"\\n\");
+        admins=(User / \"$ORG\").admins.select { |u| not u.disabled and not u.suspended_at }.map { |u| u.$PROPERTY }.sort;
     '"
 EOF
