@@ -4,7 +4,7 @@
 # the teams.
 #
 # Usage:
-#   repo-move.sh [OPTIONS] <source org> <target org>
+#   org-transfer-all-repos.sh [OPTIONS] <source org> <target org>
 #
 # Options:
 #   --i-know-what-im-doing Suppress any warning (useful for scripting!)
@@ -12,7 +12,7 @@
 #   -h, --help             Display this message.
 #
 # Example:
-#   repo-move.sh org1 org2
+#   org-transfer-all-repos.sh org1 org2
 #
 
 BASE_DIR=$(cd "${0%/*}/.." && pwd)
