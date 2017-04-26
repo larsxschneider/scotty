@@ -3,7 +3,7 @@
 # Move a repository to another organization.
 #
 # Usage:
-#   repo-move.sh [OPTIONS] <source org/repo> <target org>
+#   repo-transfer.sh [OPTIONS] <source org/repo> <target org>
 #
 # Options:
 #   --i-know-what-im-doing Suppress any warning (useful for scripting!)
@@ -11,7 +11,7 @@
 #   -h, --help             Display this message.
 #
 # Example:
-#   repo-move.sh org1/repo org2
+#   repo-transfer.sh org1/repo org2
 #
 
 BASE_DIR=$(cd "${0%/*}/.." && pwd)
