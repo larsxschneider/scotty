@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-# Print admins of an org. The GH API allows to query the admins, too,
-# but you would need to be an admin in that org yourself to see
-# non-public members.
+# Print admins of an org that are neither disabled or suspended.
+# The GH API allows to query the admins, too,  but you would need to be
+# an admin in that org yourself to see non-public members.
 #
 # c.f. https://developer.github.com/v3/orgs/members/
 #
