@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# Print and count auth errors. Either all or per repo.
+# Print and count Git auth errors. Either all or per repo.
 #
 # Usage:
-#   auth-errors.sh [OPTIONS] [<org>/<repo>]
+#   gitauth-errors.sh [OPTIONS] [<org>/<repo>]
 #
 # Options:
 #   -m, --min     Aggregate by 1 minute
@@ -16,7 +16,7 @@
 #   -h, --help    Display this message.
 #
 # Example:
-#   auth-errors.sh -a -m foo/bar
+#   gitauth-errors.sh -a -m foo/bar
 #
 
 BASE_DIR=$(cd "${0%/*}/.." && pwd)
