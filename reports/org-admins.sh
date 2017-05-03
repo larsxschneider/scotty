@@ -11,6 +11,7 @@
 #
 # Options:
 #   -e, --email            Print email addresses instead of usernames.
+#   -m, --mention          Print usernames with as @mention.
 #   -n                     Dry-run; only show what would be done.
 #   -h, --help             Display this message.
 #
@@ -23,9 +24,11 @@ BASE_DIR=$(cd "${0%/*}/.." && pwd)
 
 PROPERTY="login"
 SEPARATOR="\\n"
+PREFIX=""
 while [ $# -gt 0 ]; do
     case $1 in
         (-e|--email) PROPERTY="email"; SEPARATOR="; "; shift;;
+        (-m|--mention) PREFIX="@"; SEPARATOR=" @"; shift;;
         (-n) DRY_RUN=1; shift;;
         (-h|--help) usage 2>&1;;
         (--) shift; break;;
@@ -39,6 +42,7 @@ if [ -z "$ORG" ]; then
     usage "Org must not be empty."
 fi
 
+printf "$PREFIX";
 execute << EOF
     github-env bin/runner -e production "'
         admins=(User / \"$ORG\").admins.select { |u| not u.disabled and not u.suspended_at }.map { |u| u.$PROPERTY }.sort;
