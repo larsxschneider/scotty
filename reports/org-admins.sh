@@ -45,7 +45,7 @@ fi
 printf "$PREFIX";
 execute << EOF
     github-env bin/runner -e production "'
-        admins=(User / \"$ORG\").admins.select { |u| not u.disabled and not u.suspended_at }.map { |u| u.$PROPERTY }.sort;
+        admins=User.find_by_login(\"$ORG\").admins.select { |u| not u.disabled and not u.suspended_at and u.$PROPERTY }.map { |u| u.$PROPERTY }.sort;
         puts admins.join(\"$SEPARATOR\");
     '"
 EOF
