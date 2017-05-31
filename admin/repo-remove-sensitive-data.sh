@@ -37,11 +37,7 @@ fi
 
 warning "This script restarts GHE services!"
 
-CMD="git for-each-ref --format='delete %(refname)' refs/original | git update-ref --stdin;"
-CMD+="git reflog expire --expire=now --all;"
-CMD+="git gc --prune=now;"
-
 execute << EOF
-    ghe-repo $REPO -c "$CMD"
+    ghe-repo-gc --prune $REPO
     sudo service memcached restart
 EOF
