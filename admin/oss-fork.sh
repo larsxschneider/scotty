@@ -116,7 +116,7 @@ pushd "$TEMP_REPO_PATH"
         echo "Set default branch to $DEFAULT_BRANCH ..."
         set +e  # Might fail if the default branch is already correct
         ghe_api -X PATCH \
-            --data '{ "default_branch":"'$DEFAULT_BRANCH'" }' \
+            --data '{ "name":"'$TARGET_REPO_NAME'" , "default_branch":"'$DEFAULT_BRANCH'" }' \
             repos/$OSS_FORK_ORG/$TARGET_REPO_NAME > /dev/null
         set -e
     fi
