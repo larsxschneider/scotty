@@ -4,6 +4,7 @@
 
 # Default constants
 LOG='log'
+REQUIRED_GHE_MAJOR_VERSION='2.9'
 
 function error_exit () {
     echo -e "\n$(tput setaf 1)###\n### ERROR\n###\n> $(tput sgr 0)$1\n" >&2
@@ -62,14 +63,18 @@ function ghe_api() {
 }
 
 function execute() {
+    CHECK_VERSION="cat /etc/github/enterprise-release | \
+        grep --quiet --fixed-strings 'RELEASE_VERSION=\"$REQUIRED_GHE_MAJOR_VERSION.' || \
+        { echo 'ERROR: Refused to run script. Scotty was only tested with GHE $REQUIRED_GHE_MAJOR_VERSION!'; exit 1; }"
     if [ -n "$DRY_RUN" ]; then
         echo "#"
         echo "# Dry run. The script would invoke the following command on $GHE_HOST:"
         echo "#"
         echo
+        echo $CHECK_VERSION
         cat
     else
-        ssh -i $GHE_KEY admin@$GHE_HOST -p 122 /bin/bash
+        { echo $CHECK_VERSION; cat; } | ssh -i $GHE_KEY admin@$GHE_HOST -p 122 /bin/bash
     fi
 }
 
