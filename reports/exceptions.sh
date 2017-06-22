@@ -6,6 +6,7 @@
 #   exceptions.sh [OPTIONS] [<org>/<repo>]
 #
 # Options:
+#   -l, --latest  Print latest exceptions
 #   -m, --min     Aggregate by 1 minute
 #   -t, --tenmin  Aggregate by 10 minute
 #       --hour    Aggregate by 1 hour (default)
@@ -27,6 +28,7 @@ INTERVAL=13 # --hour
 
 while [ $# -gt 0 ]; do
     case $1 in
+        (-l|--latest)   LATEST=1; shift;;
         (-m|--min)      INTERVAL=16; shift;;
         (-t|--tenmin)   INTERVAL=15; shift;;
         (--hour)        INTERVAL=13; shift;;
@@ -76,22 +78,30 @@ ERR=(
 )
 IFS='|';ERR="${ERR[*]}";IFS=$' \t\n'
 
-execute << EOF
-    zcat -f /var/log/github/exceptions.$LOG |
-        $GREP_REPO |
-        jq '.created_at + .message' |
-        perl -lape 's/^"(.{$INTERVAL}).{$((27-$INTERVAL))}(.*)"$/\$1 \$2/' |
-        perl -lape 's/^(.{$INTERVAL} )\[.+ sec\]\s*(.*)/\$1\$2/' |
-        perl -lape 's/^(.{$INTERVAL} )(.*)\s*Real.+\(CPU.+Idle.+\)$/\$1\$2/' |
-        perl -lape 's/^(.{$INTERVAL} )at (.*)\s*\(took.+idle\)$/\$1\$2/' |
-        perl -lape 's/^(.{$INTERVAL} ).*application:github,category:([^,]*),route:([^,|\*]*).*/\$1\$2 \$2/' |
-        perl -lape 's/^(.{$INTERVAL} ).*application:gitauth,category:(gitauth).*/\$1\$2/' |
-        perl -lape 's/^(.{$INTERVAL} )(SELECT.*)\w*FROM.*/\$1\$2/' |
-        perl -lape 's/^(.{$INTERVAL} )(UPDATE.*)\w*SET.*/\$1\$2/' |
-        perl -lape 's/^(.{$INTERVAL} )(INSERT.*)\w*\(.*/\$1\$2/' |
-        perl -lape 's/^(.{$INTERVAL} )(.*GET).*/\$1\$2/' |
-        perl -lape 's/^(.{$INTERVAL} ).*($ERR).*/\$1\$2/' |
-        sort |
-        uniq -c |
-        sort -k2 -k3
+if [ -n "$LATEST" ]; then
+    execute << EOF
+        zcat -f /var/log/github/exceptions.$LOG |
+            $GREP_REPO |
+            jq 'del(.parsed_body, .body, .params, .threepc_state, .activerecord_objects, .backtrace, .cause, .delegate_replicas, .gitrpc_calls, .queries, .query_counts, .remote_backtrace, .request_timer_events)'
 EOF
+else
+    execute << EOF
+        zcat -f /var/log/github/exceptions.$LOG |
+            $GREP_REPO |
+            jq '.created_at + .message' |
+            perl -lape 's/^"(.{$INTERVAL}).{$((27-$INTERVAL))}(.*)"$/\$1 \$2/' |
+            perl -lape 's/^(.{$INTERVAL} )\[.+ sec\]\s*(.*)/\$1\$2/' |
+            perl -lape 's/^(.{$INTERVAL} )(.*)\s*Real.+\(CPU.+Idle.+\)$/\$1\$2/' |
+            perl -lape 's/^(.{$INTERVAL} )at (.*)\s*\(took.+idle\)$/\$1\$2/' |
+            perl -lape 's/^(.{$INTERVAL} ).*application:github,category:([^,]*),route:([^,|\*]*).*/\$1\$2 \$2/' |
+            perl -lape 's/^(.{$INTERVAL} ).*application:gitauth,category:(gitauth).*/\$1\$2/' |
+            perl -lape 's/^(.{$INTERVAL} )(SELECT.*)\w*FROM.*/\$1\$2/' |
+            perl -lape 's/^(.{$INTERVAL} )(UPDATE.*)\w*SET.*/\$1\$2/' |
+            perl -lape 's/^(.{$INTERVAL} )(INSERT.*)\w*\(.*/\$1\$2/' |
+            perl -lape 's/^(.{$INTERVAL} )(.*GET).*/\$1\$2/' |
+            perl -lape 's/^(.{$INTERVAL} ).*($ERR).*/\$1\$2/' |
+            sort |
+            uniq -c |
+            sort -k2 -k3
+EOF
+fi
