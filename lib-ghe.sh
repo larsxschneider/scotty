@@ -4,7 +4,7 @@
 
 # Default constants
 LOG='log'
-REQUIRED_GHE_MAJOR_VERSION='2.9'
+REQUIRED_GHE_MAJOR_VERSION='2.10'
 
 function error_exit () {
     echo -e "\n$(tput setaf 1)###\n### ERROR\n###\n> $(tput sgr 0)$1\n" >&2
