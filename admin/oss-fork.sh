@@ -98,7 +98,8 @@ pushd "$TEMP_REPO_PATH"
                         "required_status_checks":null,
                         "restrictions": {
                             "users": ["'$OSS_FORK_UPDATE_USER'"], "teams": []
-                        }
+                        },
+                        "enforce_admins":true
                     }' \
                     repos/$OSS_FORK_ORG/$TARGET_REPO_NAME/branches/$BRANCH_NAME/protection \
                     > /dev/null || (( RETRY_COUNT++ >= 5 ))
