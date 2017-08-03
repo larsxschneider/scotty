@@ -76,13 +76,6 @@ TEMP_REPO_PATH=$(mktemp -d)
 pushd "$TEMP_REPO_PATH"
     git clone $SOURCE_URL .
     git remote set-url origin $TARGET_REPO_URL
-    sed -i '' '/refs\/pull\//d' .git/packed-refs
-    sed -i '' '/refs\/changes\//d' .git/packed-refs
-    sed -i '' '/refs\/reviewable\//d' .git/packed-refs
-    sed -i '' '/refs\/reviewable\//d' .git/packed-refs
-    sed -i '' '/refs\/remotes\/origin\/pr\//d' .git/packed-refs
-    # Some weird refs in the cpython repo
-    sed -i '' '/refs\/remotes\/origin\/origin\//d' .git/packed-refs
 
     echo "Uploading and protecting upstream branches ..."
     for BRANCH in $(git for-each-ref --format='%(refname)' refs/remotes/origin/); do
