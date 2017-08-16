@@ -56,6 +56,9 @@ execute << EOF
             }
             GitHub.context.push(actor_id: staff_user.id);
             source_org.repositories.each {|repo|
+                if repo.method(:async_transfer_ownership_to).parameters != [[:req, :user], [:keyreq, :actor], [:key, :target_teams]];
+                    raise \"Error: 'Repository#async_transfer_ownership_to' signature changed. GitHub Enterprise version is not compatible!\"
+                end;
                 teams = repo.teams.map { |t| {
                     \"name\" => t.name,
                     \"description\" => t.description,
@@ -76,16 +79,25 @@ execute << EOF
                     target_team = target_org.teams.find {|t| t.name == source_team[\"name\"] };
                     if !target_team;
                         puts \"Creating team: #{source_team[\"name\"]}\";
+                        if target_org.method(:create_team).parameters != [[:keyreq, :creator], [:key, :repos], [:key, :ldap_dn], [:key, :maintainers], [:key, :attrs]];
+                            raise \"Error: Organization#create_team signature changed. GitHub Enterprise version is not compatible!\"
+                        end;
                         target_team = target_org.create_team(creator: staff_user, attrs: { :name => source_team[\"name\"] });
                         target_team.description = source_team[\"description\"];
                         target_team.privacy = source_team[\"privacy\"];
                         target_team.save!;
                         source_team[\"members\"].each {|m|
                             puts \"Adding member to team _#{target_team.name}_: #{m}\";
+                            if target_team.method(:add_member).parameters != [[:req, :user], [:opt, :options]];
+                                raise \"Error: 'team.add_member' signature changed. GitHub Enterprise version is not compatible!\"
+                            end;
                             target_team.add_member(User.find_by_login(m));
                         };
                     end
                     puts \"Adding repo to team _#{target_team.name}_: #{target_repo.name} (#{source_team[\"permission\"]})\";
+                    if target_team.method(:add_repository).parameters != [[:req, :repo], [:req, :perm], [:key, :allow_different_owner]];
+                        raise \"Error: Team#add_repository signature changed. GitHub Enterprise version is not compatible!\"
+                    end;
                     target_team.add_repository(target_repo, source_team[\"permission\"]);
                 }
             }
