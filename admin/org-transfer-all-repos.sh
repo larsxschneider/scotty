@@ -76,7 +76,7 @@ execute << EOF
                     target_team = target_org.teams.find {|t| t.name == source_team[\"name\"] };
                     if !target_team;
                         puts \"Creating team: #{source_team[\"name\"]}\";
-                        target_team = target_org.create_team(source_team[\"name\"], creator: staff_user);
+                        target_team = target_org.create_team(creator: staff_user, attrs: { :name => source_team[\"name\"] });
                         target_team.description = source_team[\"description\"];
                         target_team.privacy = source_team[\"privacy\"];
                         target_team.save!;
