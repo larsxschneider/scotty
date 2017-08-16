@@ -64,7 +64,8 @@ execute << EOF
                     \"description\" => t.description,
                     \"permission\" => t.permission_for(repo),
                     \"privacy\" => t.privacy,
-                    \"members\" => t.members.map { |m| m.login }
+                    \"members\" => t.members.map { |m| m.login },
+                    \"maintainers\" => t.maintainers.map { |m| m.login }
                 } };
                 puts \"Transferring repo: #{repo.name}\";
                 repo.async_transfer_ownership_to(target_org, actor: staff_user, target_teams: []);
@@ -92,6 +93,13 @@ execute << EOF
                                 raise \"Error: 'team.add_member' signature changed. GitHub Enterprise version is not compatible!\"
                             end;
                             target_team.add_member(User.find_by_login(m));
+                        };
+                        source_team[\"maintainers\"].each {|m|
+                            puts \"Promote maintainers in team _#{target_team.name}_: #{m}\";
+                            if target_team.method(:promote_maintainer).parameters != [[:req, :user]];
+                                raise \"Error: Team(Team::Roles)#promote_maintainer signature changed. GitHub Enterprise version is not compatible!\"
+                            end;
+                            target_team.promote_maintainer(User.find_by_login(m));
                         };
                     end
                     puts \"Adding repo to team _#{target_team.name}_: #{target_repo.name} (#{source_team[\"permission\"]})\";
