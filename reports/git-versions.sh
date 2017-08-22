@@ -36,7 +36,9 @@ execute << EOF
         uniq |
         perl -lape 's/[^ ]+ //' |
         grep -E '^git/' |
-        sort |
+        grep -v 'libgit2' |
+        perl -lape 's/(git\/\d+(?:\.\d+){0,2}).*$/\$1/' |
+        sort -r -V |
         uniq -c |
-        sort -n -r
+        awk '{printf("%s\t%s\n",\$2,\$1)}'
 EOF
