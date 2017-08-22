@@ -7,14 +7,14 @@
 # Finally memcached is restarted to remove cached views.
 #
 # Usage:
-#   repo-remove-sensitive-data.sh [OPTIONS] <org>/<repo>
+#   repo-prune-orphaned-objects.sh [OPTIONS] <org>/<repo>
 #
 # Options:
 #   -n            Dry-run; only show what would be done.
 #   -h, --help    Display this message.
 #
 # Example:
-#   repo-remove-sensitive-data.sh foo/bar
+#   repo-prune-orphaned-objects.sh foo/bar
 #
 
 BASE_DIR=$(cd "${0%/*}/.." && pwd)
