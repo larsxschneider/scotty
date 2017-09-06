@@ -5,7 +5,7 @@
 # See: https://developer.github.com/v3/enterprise/admin_stats/
 #
 # Usage:
-#   admin-stats.sh
+#   admin-stats.sh [OPTIONS]
 #
 # Options:
 #   -n            Dry-run; only show what would be done.
