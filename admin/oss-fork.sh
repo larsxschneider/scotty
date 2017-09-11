@@ -65,7 +65,7 @@ if [ "$ACTION" == "create" ]; then
 else
     SOURCE_URL=$(\
         ghe_api repos/$OSS_FORK_ORG/$TARGET_REPO_NAME |
-        grep '"description": "Forked from' | grep -o 'http[s]\?://[^"]*' \
+        grep '"description": "Forked from' | grep -o '\(https\|http\|git\)://[^"]*' \
     )
     echo "Updating fork: $SOURCE_URL --> $TARGET_REPO_NAME"
 fi
