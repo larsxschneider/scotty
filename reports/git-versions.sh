@@ -30,14 +30,11 @@ while [ $# -gt 0 ]; do
 done
 
 execute << EOF
-    zgrep -hF '||' /var/log/haproxy.$LOG |
-        perl -lape 's/.* (.*):.* \[.*\|\|([^}]*).*/\$1 \$2/' |
+    zgrep -hF '||git/' /var/log/haproxy.$LOG |
+        perl -lape 's/.* (.*):.* \[.*\|\|git\/(\d+(?:\.\d+){0,2}).*/\$1 \$2/' |
         sort |
         uniq |
         perl -lape 's/[^ ]+ //' |
-        grep -E '^git/' |
-        grep -v 'libgit2' |
-        perl -lape 's/git\/(\d+(?:\.\d+){0,2}).*$/\$1/' |
         sort -r -V |
         uniq -c |
         awk '{printf("%s\t%s\n",\$2,\$1)}'
