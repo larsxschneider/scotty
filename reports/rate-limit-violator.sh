@@ -30,8 +30,8 @@ while [ $# -gt 0 ]; do
 done
 
 execute << EOF
-    zgrep "rate_limit_remaining=0" /var/log/github/unicorn.$LOG |
-        grep -oP "rate_limit_key=\K[^ ]*" |
+    zgrep 'rate_limit_remaining=0' /var/log/github/unicorn.$LOG |
+        grep -oP 'rate_limit_key=\K[^ ]*' |
         sort |
         uniq -c |
         sort -rn
