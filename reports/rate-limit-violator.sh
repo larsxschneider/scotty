@@ -4,7 +4,7 @@
 # been exceeded, grouped by rate limit key.
 #
 # Usage:
-#   rate-limit-report.sh [OPTIONS]
+#   rate-limit-violator.sh [OPTIONS]
 #
 # Options:
 #   -a, --all     Process all available logs (rolled logs)
@@ -12,7 +12,7 @@
 #   -h, --help    Display this message.
 #
 # Example:
-#   rate-limit-report.sh
+#   rate-limit-violator.sh
 #
 
 BASE_DIR=$(cd "${0%/*}/.." && pwd)
