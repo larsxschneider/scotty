@@ -39,5 +39,8 @@ execute << EOF
 
     zgrep 'Accepted publickey for admin' /var/log/auth.$LOG |
         perl -nE 'say /.+ (.+)/' |
-        while read key; do echo \${keys[\$key]}; done
+        while read key; do echo \${keys[\$key]}; done |
+        sort |
+        uniq -c |
+        sort -n
 EOF
