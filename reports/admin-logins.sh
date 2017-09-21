@@ -33,7 +33,7 @@ execute << EOF
     while read line; do
         [[ -n \$line ]] &&
         key=\$(ssh-keygen -l -f /dev/stdin <<<\$line | perl -nE 'print /\d+ ([^ ]+).+/') &&
-        name=\$(printf "\$line" | perl -nE 'print /.+ .* (.+)/')
+        name=\$(printf "\$line" | perl -nE 'print /[^ ]+ [^ ]* (.+)/')
         [[ -n \$key ]] && keys[\$key]=\$name
     done < ~/.ssh/authorized_keys
 
