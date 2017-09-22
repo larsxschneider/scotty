@@ -34,10 +34,15 @@ fi
 
 echo "Removing $USER from all organizations ..."
 execute << EOF
-    user = User.find_by_login [username]
-    user.organizations.each do |organization|
-        puts "Removing #{user.login} from #{organization.name}"
-        organization.remove_member(user, send_notification: false)
-    end
-    puts "Done!"
+    github-env bin/runner -e production "'
+        user = User.find_by_login(\"$USER\");
+        if user.nil?;
+            puts \"$USER does not exist.\"
+            exit
+        end;
+        user.organizations.each do |organization|;
+            organization.remove_member(user, send_notification: false);
+            puts \"Removed #{user.login} from #{organization.name}\";
+        end;
+    '"
 EOF
