@@ -7,7 +7,7 @@
 #
 # Options:
 #   -u, --user    Print results per user account (default: IP address)
-#   -a, --all     Process all available logs (rolled logs
+#   -a, --all     Process all available logs (rolled logs)
 #   -n            Dry-run; only show what would be done.
 #   -h, --help    Display this message.
 #
