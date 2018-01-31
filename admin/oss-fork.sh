@@ -7,10 +7,11 @@
 #   oss-fork.sh [OPTIONS] <repo-name> [<user-list> <source-repo-url>]
 #
 # Options:
-#   -c, --create  Create a fork. You need to pass <user-list> <source-repo-url>.
-#   -u, --update  Update a fork.
-#   -n            Dry-run; only show what would be done.
-#   -h, --help    Display this message.
+#   -c, --create     Create a fork. You need to pass <user-list> <source-repo-url>.
+#   -u, --update     Update a fork.
+#   -a, --update-all Update all forks whose name contain the <repo-name>.
+#   -n               Dry-run; only show what would be done.
+#   -h, --help       Display this message.
 #
 # Example:
 #   oss-fork.sh --create ossrepo usera,userb https://github.com/ossrepo/ossrepo.git
@@ -24,8 +25,9 @@ BASE_DIR=$(cd "${0%/*}/.." && pwd)
 while [ $# -gt 0 ]; do
     case $1 in
         (-h|--help) usage 2>&1;;
-        (-c|--create) ACTION=create; shift; break;;
-        (-u|--update) ACTION=update; shift; break;;
+        (-c|--create)     ACTION=create;     shift; break;;
+        (-u|--update)     ACTION=update;     shift; break;;
+        (-a|--update-all) ACTION=update-all; shift; break;;
         (--) shift; break;;
         (-*) usage "$1: unknown option";;
         (*) break;;
@@ -62,12 +64,24 @@ if [ "$ACTION" == "create" ]; then
             }' \
             orgs/$OSS_FORK_ORG/repos > /dev/null
     fi
-else
+elif [ "$ACTION" == "update" ]; then
     SOURCE_URL=$(\
         ghe_api repos/$OSS_FORK_ORG/$TARGET_REPO_NAME |
         grep '"description": "Forked from' | grep -o '\(https\|http\|git\)://[^"]*' \
     )
     echo "Updating fork: $SOURCE_URL --> $TARGET_REPO_NAME"
+elif [ "$ACTION" == "update-all" ]; then
+    echo "Updating all repositories in '$OSS_FORK_ORG' whose name contain '$TARGET_REPO_NAME'..."
+    REPOS=$(ghe_api "search/repositories?q=org%3A$OSS_FORK_ORG+$TARGET_REPO_NAME&type=Repositories" |
+        perl -nE 'say /"name":\s*"([^"]+)/'
+    )
+    for REPO in $REPOS; do
+        ${0} --update $REPO
+    done
+    exit 0
+else
+    echo "Unknown action '$ACTION'"
+    exit 1
 fi
 
 echo "Cloning repo ..."
