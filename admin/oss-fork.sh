@@ -72,7 +72,10 @@ elif [ "$ACTION" == "update" ]; then
     echo "Updating fork: $SOURCE_URL --> $TARGET_REPO_NAME"
 elif [ "$ACTION" == "update-all" ]; then
     echo "Updating all repositories in '$OSS_FORK_ORG' whose name contain '$TARGET_REPO_NAME'..."
-    REPOS=$(ghe_api "search/repositories?q=org%3A$OSS_FORK_ORG+$TARGET_REPO_NAME&type=Repositories" |
+
+    # TODO: We only get up to 100 results here ... we might want to
+    #       implement pagination properly at some point :-)
+    REPOS=$(ghe_api "search/repositories?q=org%3A$OSS_FORK_ORG+$TARGET_REPO_NAME&type=Repositories&per_page=100" |
         perl -nE 'say /"name":\s*"([^"]+)/'
     )
     for REPO in $REPOS; do
