@@ -103,13 +103,14 @@ pushd "$TEMP_REPO_PATH"
             RETRY_COUNT=0
             until ghe_api \
                     -X PUT \
-                    -H "Accept: application/vnd.github.loki-preview+json" \
+                    -H "Accept: application/vnd.github.luke-cage-preview+json" \
                     --data '{
                         "required_status_checks":null,
                         "restrictions": {
                             "users": ["'$OSS_FORK_UPDATE_USER'"], "teams": []
                         },
-                        "enforce_admins":true
+                        "enforce_admins":true,
+                        "required_pull_request_reviews":null
                     }' \
                     repos/$OSS_FORK_ORG/$TARGET_REPO_NAME/branches/$BRANCH_NAME/protection \
                     > /dev/null || (( RETRY_COUNT++ >= 5 ))
